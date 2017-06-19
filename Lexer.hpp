@@ -11,15 +11,21 @@
 
 #include "Instance.hpp"
 #include "List.hpp"
-
-struct XLexical{
-    short flag;
-    char regularExp[];
-};
-
-class MLexer
-:public Instance<MLexer>{
-    List<XLexical> lexicals;
-};
-
+#include "String.hpp"
+#include "Tree.hpp"
+namespace st{
+    struct XLexical{
+        short flag;
+        string regulerExp;
+    };
+    class MLexer
+    :public Instance<MLexer>{
+    public:
+        void lexOneLine(const string& line);
+    private:
+        void Initialize();
+        BTreeOfChar formatTree;
+        List<XLexical> _lexicalsBuffer;
+    };
+}
 #endif /* Lexer_hpp */

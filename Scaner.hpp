@@ -10,11 +10,18 @@
 #define MScaner_hpp
 
 #include "Instance.hpp"
-
-class MScaner
-:public Instance<MScaner>{
-public:
-    char* _pCurrentLine;
-};
-
+#include "String.hpp"
+namespace st{
+    class MScaner
+    :public Instance<MScaner>{
+    public:
+        void NextLine();
+        const string& getCurrentLine();
+        const int getLineNumber();
+    private:
+        char* flag;
+        int _lineNumber;
+        string _currentLine;
+    };
+}
 #endif /* Scaner_hpp */

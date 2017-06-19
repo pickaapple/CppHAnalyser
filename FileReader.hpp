@@ -10,12 +10,15 @@
 #define FileReader_hpp
 #include "Instance.hpp"
 
-class MFileReader:
 public Instance<MFileReader>{
-public:
-    void ReadFile(const char* szFile);
-public:
-    char* _szText;
-};
-
+#include "String.hpp"
+namespace st{
+    class MFileReader:
+    public Instance<MFileReader>{
+    public:
+        void ReadFile(const char* szFile);
+    public:
+        string _text;
+    };
+}
 #endif /* FileReader_hpp */
