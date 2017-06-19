@@ -9,8 +9,6 @@
 #ifndef FileReader_hpp
 #define FileReader_hpp
 #include "Instance.hpp"
-
-public Instance<MFileReader>{
 #include "String.hpp"
 namespace st{
     class MFileReader:
