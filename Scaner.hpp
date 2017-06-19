@@ -1,5 +1,5 @@
 //
-//  MScaner.hpp
+//  Scaner.hpp
 //  CppAnalyser
 //
 //  Created by yhys on 2017/6/4.
@@ -9,6 +9,12 @@
 #ifndef MScaner_hpp
 #define MScaner_hpp
 
-#include <stdio.h>
+#include "Instance.hpp"
 
-#endif /* MScaner_hpp */
+class MScaner
+:public Instance<MScaner>{
+public:
+    char* _pCurrentLine;
+};
+
+#endif /* Scaner_hpp */
