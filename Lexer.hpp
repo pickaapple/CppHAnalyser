@@ -15,16 +15,16 @@
 #include "Tree.hpp"
 namespace st{
     struct XLexical{
-        short flag;
+        char flag;
         string regulerExp;
     };
     class MLexer
     :public Instance<MLexer>{
     public:
-        void lexOneLine(const string& line);
-    private:
         void Initialize();
-        BTreeOfChar formatTree;
+        void LexOneLine(const string& line);
+    private:
+        BTreeOfChar _formatTree;
         List<XLexical> _lexicalsBuffer;
     };
 }

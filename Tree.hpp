@@ -15,24 +15,24 @@ namespace st{
         BinaryTreeNode* _parent;
         BinaryTreeNode* _left;
         BinaryTreeNode* _right;
-        payload_type p;
+        payload_type _p;
         /**
          Next empty node of this node
 
          @return 
             next custom node's address, but null when this node has full children.
          */
-        BinaryTreeNode* NextEmpty();
+        BinaryTreeNode<P>* NextEmpty();
         bool operator ==    (const BinaryTreeNode& node) const;
         bool operator >     (const BinaryTreeNode& node) const;
         bool operator <     (const BinaryTreeNode& node) const;
     };
-    template<class N>
+    template<class N,class P>
     class Tree{
     public:
         typedef N node_type;
-        
-        void InjectNodes(const node_type* nodes,const node_type& endOfNode);
+        typedef P payload_type;
+        void InjectNodes(const payload_type* nodes,const payload_type& endOfNode);
         node_type root;
     };
     
