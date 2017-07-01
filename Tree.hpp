@@ -8,6 +8,7 @@
 
 #ifndef Tree_hpp
 #define Tree_hpp
+#include "Allocation.hpp"
 namespace st{
     template<class P>
     class BinaryTreeNode{
@@ -27,7 +28,7 @@ namespace st{
         bool operator >     (const BinaryTreeNode& node) const;
         bool operator <     (const BinaryTreeNode& node) const;
     };
-    template<class N,class P>
+    template<class N,class P = Mallocation>
     class Tree{
     public:
         typedef N node_type;

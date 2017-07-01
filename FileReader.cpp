@@ -7,7 +7,8 @@
 //
 
 #include "FileReader.hpp"
-
-void MFileReader::ReadFile(const char *szFile){
-    
+namespace st{
+    void MFileReader::ReadFile(const char *szFile){
+        
+    }
 }

@@ -13,12 +13,16 @@
 #include "Allocation.hpp"
 
 namespace st {
+    namespace utf8{
+        typedef unsigned int uchar;
+        typedef unsigned char byte;        
+    }
     template <class T,class P>
     class String:
     public List<T,P>{
     public:
-        String(const char* str);
-        ~String();
+        String(const char* str, unsigned int length);
+        virtual ~String(){};
     };
     
     typedef String<char,Mallocation> string;

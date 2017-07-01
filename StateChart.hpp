@@ -13,31 +13,66 @@
 #include "List.hpp"
 
 namespace st{
-    struct State{
-        char flag;
-    };
+    
+    ////////////////////////////////////////////////////////////
+    
+    template<class S>
     class BaseChart{
-        enum EStateStep{
-            STATE_STEP_START,
-            STATE_STEP_IN,
-            STATE_STEP_END
+        typedef S state_type;
+    public:
+        void AddState(const state_type& state){
+            _states.Add(state);
+        };
+        bool Pass(const state_type state){
+            for (int i = _states.length() - 1 ; i >= 0 ; --i) {
+                if(state == _states[i])
+                    return true;
+            }
+            return false;
         };
     public:
-        void Initialize(const State states[],const int size);
-        bool Pass(const string& str);
-    public:
         BaseChart();
-        virtual ~BaseChart();
+        explicit BaseChart(const state_type states[],const unsigned int size);
+        virtual ~BaseChart(){};
     protected:
-        EStateStep _step;
         int _size;
-        List<State> _states;
+        List<state_type> _states;
     };
-    class LetterChart
-    :public BaseChart{
+    
+    ////////////////////////////////////////////////////////////
+    
+    class CharacterChart
+    :public BaseChart<utf8::uchar>{
     public:
-        LetterChart();
-        virtual ~LetterChart();
+        CharacterChart();
+        virtual ~CharacterChart(){};
+    protected:
+        const static int CHAR_LENTH = 52;
+        static utf8::uchar CHARS[];
+    };
+    
+    ////////////////////////////////////////////////////////////
+    
+    class DigitChart
+    :public BaseChart<utf8::uchar>{
+    public:
+        DigitChart();
+        virtual ~DigitChart(){};
+    protected:
+        const static int DIGIT_LENTH = 10;
+        static utf8::uchar CHARS[];
+    };
+    
+    ////////////////////////////////////////////////////////////
+    
+    class XDigitChart
+    :public BaseChart<utf8::uchar>{
+    public:
+        XDigitChart();
+        virtual ~XDigitChart(){};
+    protected:
+        const static int XDIGIT_LENTH = 22;
+        static utf8::uchar CHARS[];
     };
 }
 
