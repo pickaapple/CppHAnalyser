@@ -17,15 +17,27 @@ namespace st {
         typedef unsigned int uchar;
         typedef unsigned char byte;        
     }
-    template <class T,class P>
+    template <class T, class P = Mallocation>
     class String:
     public List<T,P>{
+        
     public:
         String(const char* str, unsigned int length);
+        
         virtual ~String(){};
     };
     
-    typedef String<char,Mallocation> string;
+    typedef String<char> string;
+    
+    //
+    // Implemenation
+    //
+    
+    
+    template<class T, class P>
+    String<T, P>::String(const char* str,unsigned int length){
+        List<T,P>::Initialize(str,length);
+    }
 }
 
 #endif /* String_hpp */

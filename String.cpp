@@ -8,8 +8,5 @@
 
 #include "String.hpp"
 namespace st{
-    template<class T,class P>
-    String<T, P>::String(const char* str,unsigned int length){
-        List<T,P>::Initialize(str,length);
-    }
+
 }
