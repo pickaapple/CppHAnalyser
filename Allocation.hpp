@@ -10,11 +10,18 @@
 #define Allocation_hpp
 
 #include <stdlib.h>
-
-class Mallocation{
-public:
-    static void* New(size_t size);
-    static void Delete(void* p);
-};
-
+namespace st{
+    class Mallocation{
+    public:
+        static void* New(size_t size);
+        static void Delete(void* p);
+        static void FatalProcessOutOfMemory();
+    };
+    class Malloced
+    {
+    public:
+        void* operator new(size_t size);
+        void operator delete(void* p);
+    };
+}
 #endif /* Allocation_hpp */
