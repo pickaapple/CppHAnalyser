@@ -9,11 +9,43 @@
 #ifndef Macro_h
 #define Macro_h
 
-#define DECLARE_ATTRI(type,name) \
-protected:\
-    type _##name;\
-public:\
-    type    Get##name () const { return _##name;}\
-    void    Set##name (type name) { _##name = name;}
+#include "Checks.hpp"
+
+#define DECLARE_ATTRI(type,attri)                                   \
+protected:                                                          \
+    type _##attri;                                                  \
+public:                                                             \
+    type    Get##attri () const { return _##attri;}                 \
+    void    Set##attri (const type& attri) { _##attri = attri;}     \
+
+
+#define DECLARE_ATTRI_PTR(type,attri)                               \
+protected:                                                          \
+    type * _##attri;                                                \
+public:                                                             \
+    type *  Get##attri () const { return _##attri;}                 \
+    void    Set##attri (type * const attri) { _##attri = attri;}    \
+
+
+#define DECLARE_SELF_CONTROL_VIRTUAL(class)               \
+public:                                                     \
+    virtual class * NewSelf() const = 0;                    \
+    virtual void DeleteSelf() = 0;                          \
+
+
+#define DECLARE_SELF_CONTROL_OVERRIDE(class,parrent)        \
+public:                                                     \
+    virtual parrent * NewSelf() const override              \
+    {                                                       \
+        class * pclass = new class();                       \
+        ASSERT(pclass);                                     \
+        return pclass;                                     \
+    }                                                       \
+                                                            \
+    virtual void DeleteSelf() override                      \
+    {                                                       \
+        delete this;                                        \
+    }                                                       \
+
 
 #endif /* Macro_h */
