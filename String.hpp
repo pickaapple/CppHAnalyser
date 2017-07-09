@@ -33,9 +33,9 @@ namespace st {
     // Implemenation
     //
     
-    
     template<class T, class P>
-    String<T, P>::String(const char* str,unsigned int length){
+    String<T,P>::String(const char* str,unsigned int length)
+    {
         List<T,P>::Initialize(str,length);
     }
 }
