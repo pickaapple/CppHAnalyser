@@ -35,14 +35,30 @@ namespace st{
     :_states(ALTERNATIVECHART_DEFUALT_STATE_CAPACITY)
     ,BaseChart(type)
     {
-    };
+    }
     
     
-    AlternativeChart::AlternativeChart(State* const states[], size_t length, size_t capacity)
-    :_states(states,length,capacity)
+    AlternativeChart::AlternativeChart(const State* const states[],const size_t length,const size_t capacity)
+    :_states(capacity)
     {
-    };
+        int i;
+        foreachArray(i, length)
+        {
+            State* const state = states[i] -> NewSelf();
+            _states.Add(state);
+        }
+    }
     
+    
+    AlternativeChart::~AlternativeChart()
+    {
+        int i;
+        foreachArray(i, _states.length())
+        {
+            _states[i] -> DeleteSelf();
+            _states[i] = nullptr;
+        }
+    }
     
     bool AlternativeChart::Pass(const State &state) const
     {
@@ -65,7 +81,10 @@ namespace st{
     
     bool Utf8State::StateEquals(const st::State &state) const
     {
-        return _Char == (dynamic_cast<const Utf8State&>(state)).GetChar();
+        const Utf8State* utf8State = dynamic_cast<const Utf8State*>(&state);
+        if(!utf8State)
+            return false;
+        return _Char == utf8State -> GetChar();
     }
     
     ////////////////////////////////////////////////////////////
@@ -91,7 +110,21 @@ namespace st{
     utf8Char_3 = '3', utf8Char_4 = '4', utf8Char_5 = '5', utf8Char_6 = '6',
     utf8Char_7 = '7', utf8Char_8 = '8', utf8Char_9 = '9';
     
+    
+    static Utf8State utf8Char_plus = '+', utf8Char_minus = '-',
+    utf8Char_multip = '*', utf8Char_divided = '\\', Utf8Char_equals = '=',
+    utf8Char_or = '|', utf8Char_and = '&', utf8Char_point = '.',
+    utf8Char_not = '!', utf8Char_less = '<', utf8Char_more = '>',
+    utf8Char_parenthesis_left = '(', utf8_parenthesis_right = ')',
+    utf8Char_square_brackets_left = '[', utf8Char_square_brackets_right = ']',
+    utf8Char_curly_braces_left = '{', utf8Char_curly_braces_right = '}';
+    
+    static Utf8State utf8Char_question = '?', utf8Char_dollar = '$',
+    utf8Char_percent = '%', utf8Char_underline = '_';
+    
     ////////////////////////////////////////////////////////////
+    
+    const int LetterChart::CHAR_LENGTH = 52;
     
     State* LetterChart::CHARS[] =
     {
@@ -110,10 +143,12 @@ namespace st{
     };
 
     LetterChart::LetterChart()
-    :AlternativeChart(CHARS,CHAR_LENTH){
+    :AlternativeChart(CHARS,CHAR_LENGTH){
     };
 
     ////////////////////////////////////////////////////////////
+    
+    const int DigitChart::CHAR_LENGTH = 10;
     
     State* DigitChart::CHARS[] =
     {
@@ -122,10 +157,12 @@ namespace st{
     };
     
     DigitChart::DigitChart()
-    :AlternativeChart(CHARS,DIGIT_LENTH){
+    :AlternativeChart(CHARS,CHAR_LENGTH){
     };
     
     ////////////////////////////////////////////////////////////
+    
+    const int XDigitChart::CHAR_LENGTH = 15;
     
     State* XDigitChart::CHARS[]  =
     {
@@ -138,7 +175,7 @@ namespace st{
     };
     
     XDigitChart::XDigitChart()
-    :AlternativeChart(CHARS,XDIGIT_LENTH)
+    :AlternativeChart(CHARS,CHAR_LENGTH)
     {
     };
     
