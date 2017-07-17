@@ -17,11 +17,12 @@ namespace st{
         static void Delete(void* p);
         static void FatalProcessOutOfMemory();
     };
+    
     class Malloced
     {
     public:
         void* operator new(size_t size);
         void operator delete(void* p);
-    };
-}
+    }; 
+};
 #endif /* Allocation_hpp */

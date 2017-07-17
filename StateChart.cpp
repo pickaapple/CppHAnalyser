@@ -74,6 +74,10 @@ namespace st{
     
     ////////////////////////////////////////////////////////////
     
+    Utf8State::Utf8State()
+    {
+    }
+    
     Utf8State::Utf8State(utf8::uchar chr)
     :_Char(chr)
     {

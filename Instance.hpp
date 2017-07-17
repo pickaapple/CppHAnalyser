@@ -15,4 +15,10 @@ public:
 
 };
 
+template<class T>
+T* Instance<T>::GetInstance(){
+    static T t;
+    return *t;
+};
+
 #endif /* Instance_hpp */

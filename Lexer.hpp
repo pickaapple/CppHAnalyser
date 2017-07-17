@@ -13,19 +13,30 @@
 #include "List.hpp"
 #include "String.hpp"
 #include "Tree.hpp"
+
 namespace st{
-    struct XLexical{
+    struct FlagWord{
         char flag;
-        string regulerExp;
+        string word;
     };
+    
     class MLexer
-    :public Instance<MLexer>{
+    {
     public:
         void Initialize();
-        void LexOneLine(const string& line);
+        
+        void Input(const string& oneLine);
+        
+        void Lexer();
+
+        const List<FlagWord> Output() const;
+        
+        MLexer();
+        
+        virtual ~MLexer();
     private:
-        BTreeOfChar _formatTree;
-        List<XLexical> _lexicalsBuffer;
+        
+        List<FlagWord> wordsStore;
     };
 }
 #endif /* Lexer_hpp */

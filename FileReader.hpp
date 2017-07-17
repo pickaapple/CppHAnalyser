@@ -11,10 +11,18 @@
 #include "Instance.hpp"
 #include "String.hpp"
 namespace st{
-    class MFileReader:
-    public Instance<MFileReader>{
+    class MFileReader
+    {
     public:
+        const string& ReadCurrentLine();
+        
+        bool MoveNext();
+        
         void ReadFile(const char* szFile);
+    
+        MFileReader();
+        
+        virtual ~MFileReader();
     public:
         string _text;
     };

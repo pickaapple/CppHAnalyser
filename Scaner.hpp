@@ -13,7 +13,7 @@
 #include "String.hpp"
 namespace st{
     class MScaner
-    :public Instance<MScaner>{
+    {
     public:
         void NextLine();
         const string& getCurrentLine();
