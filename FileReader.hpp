@@ -8,15 +8,14 @@
 
 #ifndef FileReader_hpp
 #define FileReader_hpp
-#include "Instance.hpp"
+
+#include <fstream>
 #include "String.hpp"
 namespace st{
     class MFileReader
     {
     public:
-        const string& ReadCurrentLine();
-        
-        bool MoveNext();
+        bool ReadLine(string& line);
         
         void ReadFile(const char* szFile);
     
@@ -25,6 +24,7 @@ namespace st{
         virtual ~MFileReader();
     public:
         string _text;
+		std::ifstream _ifs;
     };
 }
 #endif /* FileReader_hpp */

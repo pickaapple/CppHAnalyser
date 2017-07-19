@@ -18,25 +18,49 @@
 #define foreachArray(i,l) for(i = 0 ; i < l ; ++i)
 
 namespace st{
-    template <class E,class P = Mallocation>
-    class List{
+    template <class E /*Element*/,class MA /*Memry Allocation*/ = Mallocation>
+    class List
+	{
         
     public:
-        typedef E element_type;
-        
-        inline size_t length() const{
+		typedef E	element_type;
+		typedef MA	memry_allocation;
+		const E* GetElements() const
+		{
+			return _data;
+		};
+        inline size_t length() const
+		{
             return _length;
         }
         
-        inline bool IsEmpty() const{
+        inline bool IsEmpty() const
+		{
             return 0 == _length;
         }
         
-        inline element_type& At(size_t index) const{
+        inline element_type& At(size_t index) const
+		{
             return operator[](index);
         };
-        
-        inline element_type& Add(const element_type &element){
+		// add one element at first
+		inline element_type& AddAtFirst(const element_type &element)
+		{
+			if (_length >= _capacity)
+			{
+				size_t newCapacity = 1 + _capacity + (_capacity >> 1);
+				element_type* newData = NewData(newCapacity);
+				memcpy(newData + 1, _data, sizeof(element_type) * _capacity);
+				DeleteData(_data);
+				_data = newData;
+				_capacity = newCapacity;
+			}
+			return _data[0] = element;
+		};
+
+		// add one element at last
+        inline element_type& AddAtLast(const element_type &element)
+		{
             if(_length >= _capacity)
             {
                 size_t newCapacity = 1 + _capacity + (_capacity >> 1);
@@ -48,8 +72,37 @@ namespace st{
             }
             return _data[_length++] = element;
         };
-        
-        inline bool Move(const element_type elements[], size_t size){
+
+		inline bool Injure(const element_type elements[], size_t size) 
+		{
+			if (_capacity < size + _length) 
+			{
+				size_t newCapacity = size + _length + (_capacity >> 1);
+				element_type* newData = NewData(newCapacity);
+				memcpy(newData, _data, sizeof(element_type) * _length);
+				DeleteData(_data);
+				_data = newData;
+				_capacity = newCapacity;
+			}
+			memcpy(_data + _length, elements, sizeof(element_type) * size);
+			_length += size;
+			return true;
+		}
+
+		// replace all data
+		inline bool ReplaceByIndex(const element_type& elements, size_t index)
+		{
+			if (index >= _length) 
+			{
+				return false;
+			}
+			_data[index] = elements;
+			return true;
+		};
+
+        // replace all data
+        inline bool ReplaceAll(const element_type elements[], size_t size)
+		{
             if(_capacity < size){
                 size_t newCapacity =size + (_capacity >> 1);
                 element_type* newData = NewData(newCapacity);
@@ -61,8 +114,9 @@ namespace st{
             memcpy(_data, elements, sizeof(element_type) * size);
             return true;
         };
-        
-        inline element_type Remove(unsigned int index){
+
+        inline element_type Remove(unsigned int index)
+		{
             element_type element = At(index);
             --_length;
             while (index < _length) {
@@ -71,13 +125,19 @@ namespace st{
             }
             return element;
         };
-        
-        inline element_type* NewData(size_t n){
-            return static_cast<element_type*>(P::New(n * sizeof(element_type)));
+		inline element_type RemoveLast()
+		{
+			return _data[--_length];
+		};
+
+        inline element_type* NewData(size_t n)
+		{
+            return static_cast<element_type*>(memry_allocation::New(n * sizeof(element_type)));
         };
         
-        inline void DeleteData(element_type* data){
-            P::Delete(data);
+        inline void DeleteData(element_type* data)
+		{
+			memry_allocation::Delete(data);
         };
         
         inline element_type& operator [] (size_t index) const
@@ -99,14 +159,14 @@ namespace st{
         
     private:
         inline void Initialize(size_t capacity){
-            _data = capacity > 0 ? NewData(capacity) : nullptr;
+            _data = NewData(capacity);
         };
         
         inline void Initialize(const element_type elements[],size_t length, size_t capacity){
-            if(length > capacity)
-                capacity = length;
+			ASSERT(elements);
+			ASSERT(length <= capacity);
             Initialize(capacity);
-            Move(elements, length);
+            ReplaceAll(elements, length);
         };
         
     public:
@@ -123,7 +183,13 @@ namespace st{
         ,_data(nullptr){
             Initialize(capacity);
         };
-    private:
+
+		inline explicit List()
+			:_capacity(10)
+			, _data(nullptr) {
+			Initialize(_capacity);
+		};
+    protected:
         element_type* _data;
         size_t _length;
         size_t _capacity;

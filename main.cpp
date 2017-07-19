@@ -14,29 +14,29 @@
 
 using namespace st;
 
-int main(int argc, const char * argv[]) {
-    
-    if(argc < 1)
-        return 0;
-    
-    MFileReader fReader;
-    fReader.ReadFile(argv[0]);
-
-    MLexer lexer;
-    lexer.Initialize();
-
-    MParser parser;
-    parser.Initialize();
-    
-    while(fReader.MoveNext())
-    {
-        lexer.Input(fReader.ReadCurrentLine());
-    }
-    lexer.Lexer();
-    
-    parser.Input(lexer.Output());
-    
-    parser.Show();
-    
-    return 0;
-}
+// int main(int argc, const char * argv[]) {
+//     
+//     if(argc < 1)
+//         return 0;
+//     
+//     MFileReader fReader;
+//     fReader.ReadFile(argv[0]);
+// 
+//     MLexer lexer;
+//     lexer.Initialize();
+// 
+//     MParser parser;
+//     parser.Initialize();
+//     
+//     while(fReader.MoveNext())
+//     {
+//         lexer.Input(fReader.ReadCurrentLine());
+//     }
+//     lexer.Lexer();
+//     
+//     parser.Input(lexer.Output());
+//     
+//     parser.Show();
+//     
+//     return 0;
+// }

@@ -6,7 +6,7 @@
 //  Copyright © 2017年 STRAWBERRY STUDIO. All rights reserved.
 //
 
-#include <stdio.h>
+#include <iostream>
 
 #include "FileReader.hpp"
 #include "Lexer.hpp"
@@ -16,27 +16,11 @@ using namespace st;
 
 int main(int argc, const char * argv[]) {
     
-    if(argc < 1)
-        return 0;
-    
     MFileReader fReader;
-    fReader.ReadFile(argv[0]);
-
-    MLexer lexer;
-    lexer.Initialize();
-
-    MParser parser;
-    parser.Initialize();
-    
-    while(fReader.MoveNext())
-    {
-        lexer.Input(fReader.ReadCurrentLine());
-    }
-    lexer.Lexer();
-    
-    parser.Input(lexer.Output());
-    
-    parser.Show();
-    
+    fReader.ReadFile("C:\\Users\\Administrator\\Desktop\\hello.txt");
+	string line;
+	while (fReader.ReadLine(line)) {
+	}
+	std::cout << line.GetElements();
     return 0;
 }

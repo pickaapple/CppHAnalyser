@@ -45,7 +45,7 @@ namespace st{
         foreachArray(i, length)
         {
             State* const state = states[i] -> NewSelf();
-            _states.Add(state);
+            _states.AddAtLast(state);
         }
     }
     
