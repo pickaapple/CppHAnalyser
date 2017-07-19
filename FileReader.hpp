@@ -17,7 +17,7 @@ namespace st{
     public:
         bool ReadLine(string& line);
         
-        void ReadFile(const char* szFile);
+        bool ReadFile(const char* szFile);
     
         MFileReader();
         

@@ -18,7 +18,6 @@ namespace st{
 		ASSERT(_ifs.is_open());
 		if (_ifs.eof())
 			return false;
-		int length = 0;
 		const std::streamsize buffSize = 4;
 		char buff[buffSize];
 		do{	
@@ -32,9 +31,11 @@ namespace st{
 		return true;
 	}
 
-	void MFileReader::ReadFile(const char *szFile) 
+	bool MFileReader::ReadFile(const char *szFile)
 	{
+        _ifs.clear();
 		_ifs.open(szFile);
+        return !_ifs.fail();
     }
 
 	MFileReader::MFileReader()

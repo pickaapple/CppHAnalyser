@@ -17,7 +17,12 @@ using namespace st;
 int main(int argc, const char * argv[]) {
     
     MFileReader fReader;
-    fReader.ReadFile("C:\\Users\\Administrator\\Desktop\\hello.txt");
+    //fReader.ReadFile("C:\\Users\\Administrator\\Desktop\\hello.txt");
+    if(!fReader.ReadFile("/ys/text/hello.txt"))
+    {
+        std::cout << "read file fail" << std::endl;
+        return 0;
+    }
 	string line;
 	while (fReader.ReadLine(line)) {
 	}

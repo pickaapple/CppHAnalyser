@@ -115,7 +115,7 @@ namespace st{
             return true;
         };
 
-        inline element_type Remove(unsigned int index)
+        inline element_type Remove(size_t index)
 		{
             element_type element = At(index);
             --_length;
