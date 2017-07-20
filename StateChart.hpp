@@ -78,9 +78,9 @@ namespace st{
 
         virtual bool Pass(const state_type &state) const override;
         
-        bool AddState(const State* const state);
+        bool AddState(State* const state);
         
-        bool RemoveState(const State* const state);
+        bool RemoveState(State* const state);
     public:
         AlternativeChart(Type type);
 

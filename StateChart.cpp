@@ -60,7 +60,7 @@ namespace st{
         }
     }
     
-    bool AlternativeChart::Pass(const State &state) const
+    bool AlternativeChart::Pass(const state_type &state) const
     {
         int i;
         foreachList(i,_states)
@@ -71,8 +71,22 @@ namespace st{
         
         return false;
     }
-    
-    ////////////////////////////////////////////////////////////
+
+	bool AlternativeChart::AddState(State* const state)
+	{
+		_states.AddAtLast(state);
+		return true;
+	}
+
+	bool AlternativeChart::RemoveState(State* const state)
+	{
+		size_t index;
+		if(!_states.FindIndexByElement(state, &index))
+			return false;
+		return _states.Remove(index);
+	}
+
+	////////////////////////////////////////////////////////////
     
     Utf8State::Utf8State()
     {

@@ -16,7 +16,7 @@
 
 namespace st{
     struct FlagWord{
-        char flag;
+		unsigned char flag;
         string word;
     };
     
@@ -27,16 +27,18 @@ namespace st{
         
         void Input(const string& oneLine);
         
+		unsigned char FindFlagByWord(const string &word) const;
+
         void Lexer();
 
-        const List<FlagWord> Output() const;
+        const List<FlagWord>& Output() const;
         
         MLexer();
         
         virtual ~MLexer();
     private:
-        
-        List<FlagWord> wordsStore;
+		string			_bufferString;
+        List<FlagWord>	_wordsStore;
     };
 }
 #endif /* Lexer_hpp */

@@ -25,10 +25,26 @@ namespace st{
     public:
 		typedef E	element_type;
 		typedef MA	memry_allocation;
+
+		bool FindIndexByElement(const element_type& element,size_t* index) const
+		{
+			size_t i;
+			foreachArray(i, _length) 
+			{
+				if (element == _data[i])
+				{
+					*index = i;
+					return true;
+				}
+			}
+			return false;
+		}
+
 		const E* GetElements() const
 		{
 			return _data;
-		};
+		}
+
         inline size_t length() const
 		{
             return _length;
@@ -42,7 +58,8 @@ namespace st{
         inline element_type& At(size_t index) const
 		{
             return operator[](index);
-        };
+        }
+
 		// add one element at first
 		inline element_type& AddAtFirst(const element_type &element)
 		{
@@ -56,7 +73,7 @@ namespace st{
 				_capacity = newCapacity;
 			}
 			return _data[0] = element;
-		};
+		}
 
 		// add one element at last
         inline element_type& AddAtLast(const element_type &element)
@@ -71,7 +88,7 @@ namespace st{
                 _capacity = newCapacity;
             }
             return _data[_length++] = element;
-        };
+        }
 
 		inline bool Injure(const element_type elements[], size_t size) 
 		{
@@ -98,7 +115,7 @@ namespace st{
 			}
 			_data[index] = elements;
 			return true;
-		};
+		}
 
         // replace all data
         inline bool ReplaceAll(const element_type elements[], size_t size)
@@ -113,38 +130,49 @@ namespace st{
             _length = size;
             memcpy(_data, elements, sizeof(element_type) * size);
             return true;
-        };
+        }
 
-        inline element_type Remove(size_t index)
+		//include start element
+		inline bool Remove(size_t start,size_t length)
 		{
-            element_type element = At(index);
-            --_length;
-            while (index < _length) {
-                _data[index] = _data[index+1];
-                ++index;
-            }
-            return element;
-        };
+			if (start > _length) 
+				return false;
+			if (start + length >= _length)
+			{
+				_length = start;
+				return true;
+			}
+			size_t end = start + length;
+			memcpy(_data + start, _data + end, _length - end);
+			_length -= length;
+			return true;
+		}
+
+        inline bool Remove(size_t index)
+		{
+			return Remove(index,1);
+        }
+
 		inline element_type RemoveLast()
 		{
 			return _data[--_length];
-		};
+		}
 
         inline element_type* NewData(size_t n)
 		{
             return static_cast<element_type*>(memry_allocation::New(n * sizeof(element_type)));
-        };
+        }
         
         inline void DeleteData(element_type* data)
 		{
 			memry_allocation::Delete(data);
-        };
+        }
         
         inline element_type& operator [] (size_t index) const
         {
             ASSERT(index < _length);
             return _data[index];
-        };
+        }
         
         inline bool operator == (const List& list) const
         {
@@ -167,7 +195,7 @@ namespace st{
 			ASSERT(length <= capacity);
             Initialize(capacity);
             ReplaceAll(elements, length);
-        };
+        }
         
     public:
         inline explicit List(const element_type elements[], size_t length, size_t capacity)
@@ -176,19 +204,20 @@ namespace st{
         ,_data(nullptr)
         {
             Initialize(elements, length, capacity);
-        };
+        }
         
         inline explicit List(size_t capacity)
         :_capacity(capacity)
         ,_data(nullptr){
             Initialize(capacity);
-        };
+        }
 
 		inline explicit List()
 			:_capacity(10)
 			, _data(nullptr) {
 			Initialize(_capacity);
-		};
+		}
+
     protected:
         element_type* _data;
         size_t _length;

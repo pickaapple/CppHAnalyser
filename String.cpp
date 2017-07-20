@@ -9,4 +9,14 @@
 #include "String.hpp"
 namespace st{
 
+	size_t strlen(const char *str)
+	{
+		if (0 == str)
+			return 0;
+		size_t length = 0;
+		while ('\0' != *(str++))
+			++length;
+		return length;
+	}
+
 }
