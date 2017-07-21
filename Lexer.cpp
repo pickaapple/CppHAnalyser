@@ -73,5 +73,22 @@ namespace st {
 	{
 
 	}
+	
+	//////////////////////////////////////////////////////////////////////////
+
+	unsigned char LexerDiagram::CheckFlag(const string& str)
+	{
+
+	}
+
+	LexerDiagram::LexerDiagram()
+	{
+
+	}
+
+	LexerDiagram::~LexerDiagram()
+	{
+
+	}
 
 }
