@@ -13,13 +13,6 @@
 #include "List.hpp"
 #include "StateChart.hpp"
 namespace st{
-    class StateDiagram
-    {
-    public:
-        StateDiagram();
-        virtual ~StateDiagram();
-    protected:
-        List<BaseChart*> _charts;
-    };
+    
 }
 #endif /* StateDiagram_hpp */
