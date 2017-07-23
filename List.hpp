@@ -11,11 +11,10 @@
 
 #include <string.h>
 
+#include "Macro.h"
 #include "Allocation.hpp"
 #include "Checks.hpp"
 
-#define foreachList(i,list) for(i = 0 ; i < list.length() ; ++i)
-#define foreachArray(i,l) for(i = 0 ; i < l ; ++i)
 
 namespace st{
     template <class E /*Element*/,class MA /*Memry Allocation*/ = Mallocation>
@@ -55,9 +54,11 @@ namespace st{
             return 0 == _length;
         }
         
-        inline element_type& At(size_t index) const
+        inline element_type* At(size_t index) const
 		{
-            return operator[](index);
+            if(index < _length)
+                return nullptr;
+            return &operator[](index);
         }
 
 		// add one element at first
@@ -82,7 +83,7 @@ namespace st{
             {
                 size_t newCapacity = 1 + _capacity + (_capacity >> 1);
                 element_type* newData = NewData(newCapacity);
-                memcpy(newData,_data,_capacity * sizeof(element_type));
+                memcpy((void*)newData,(void*)_data,_capacity * sizeof(element_type));
                 DeleteData(_data);
                 _data = newData;
                 _capacity = newCapacity;

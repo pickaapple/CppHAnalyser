@@ -21,13 +21,23 @@ public:                                                             \
 
 #define DECLARE_ATTRI_PTR(type,attri)                               \
 protected:                                                          \
-    type * _##attri;                                                \
+    type _##attri;                                                  \
 public:                                                             \
-    type *  Get##attri () const { return _##attri;}                 \
-    void    Set##attri (type * const attri) { _##attri = attri;}    \
+    type    Get##attri () const { return _##attri;}                 \
+    void    Set##attri (type const attri) { _##attri = attri;}      \
 
 
-#define DECLARE_SELF_CONTROL_VIRTUAL(class)               \
+#define DECLARE_ATTRI_QUICKLY(class,type,attri)                             \
+protected:                                                                  \
+    type _##attri;                                                          \
+public:                                                                     \
+    type    Get##attri () const { return _##attri;}                         \
+    class*  Set##attri (const type& attri) { _##attri = attri;return this;} \
+
+
+
+
+#define DECLARE_SELF_CONTROL_VIRTUAL(class)                 \
 public:                                                     \
     virtual class * NewSelf() const = 0;                    \
     virtual void DeleteSelf() = 0;                          \
@@ -39,7 +49,7 @@ public:                                                     \
     {                                                       \
         class * pclass = new class();                       \
         ASSERT(pclass);                                     \
-        return pclass;                                     \
+        return pclass;                                      \
     }                                                       \
                                                             \
     virtual void DeleteSelf() override                      \
@@ -47,5 +57,8 @@ public:                                                     \
         delete this;                                        \
     }                                                       \
 
+
+#define foreachList(i,list) for(i = 0 ; i < list.length() ; ++i)
+#define foreachArray(i,l) for(i = 0 ; i < l ; ++i)
 
 #endif /* Macro_h */

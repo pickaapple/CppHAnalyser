@@ -8,45 +8,173 @@
 
 #ifndef Tree_hpp
 #define Tree_hpp
+
+#include "Macro.h"
 #include "Allocation.hpp"
+#include "List.hpp"
 namespace st
 {
+    template<typename P /*Payload*/>
+    class INode
+    {
+    public:
+        typedef P payload_type;
+        
+        virtual INode<P>* GetFirstChild() const = 0;
+        
+        virtual INode<P>* GetRightBrother() const = 0;
+        
+        virtual bool AddChild(INode<payload_type>* node) = 0;
+        
+        INode();
+        
+        virtual ~INode();
+        
+        bool operator ==    (const payload_type& payload) const;
+        
+        bool operator >     (const payload_type& payload) const;
+        
+        bool operator <     (const payload_type& payload) const;
+    protected:
+        
+        DECLARE_ATTRI_QUICKLY(INode<P>, payload_type, payload);
+    };
+
+    //
+    //  Implement
+    //
+
+    template<class P /*Payload*/>
+    bool INode<P>::operator < (const payload_type& payload) const
+    {
+        return _payload < payload;
+    }
+    
+    template<class P /*Payload*/>
+    bool INode<P>::operator > (const payload_type& payload) const
+    {
+        return _payload > payload;
+    }
+    
+    template<class P /*Payload*/>
+    bool INode<P>::operator == (const payload_type& payload) const
+    {
+        return _payload = payload;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    
+    template<class P /*Payload*/>
+    class TreeNode
+        :INode<P>
+    {
+    public:
+        typedef P payload_type;
+        
+        INode<payload_type>* GetFirstChild() const override;
+        
+        INode<payload_type>* GetRightBrother() const override;
+        
+        bool AddChild(INode<payload_type>* node) override;
+        
+        TreeNode();
+        
+        virtual ~TreeNode();
+    
+    protected:
+        DECLARE_ATTRI_PTR(INode<P>*, parent);
+        
+        DECLARE_ATTRI(List<INode<P>*>, children);
+        
+        DECLARE_ATTRI(int, index);
+    };
+    
+    //
+    //  Implement
+    //
+    
+    template<class P /*Payload*/>
+    INode<P>* TreeNode<P>::GetFirstChild() const
+    {
+        return _children.At(0);
+    }
+    
+    template<class P /*Payload*/>
+    INode<P>* TreeNode<P>::GetRightBrother() const
+    {
+        ASSERT(_parent);
+        return _parent ->_children.At(_index+1);
+    }
+    
+    template<class P /*Payload*/>
+    bool TreeNode<P>::AddChild(INode<P> *node)
+    {
+        _children.AddAtLast(node)._index = _index + 1;
+        return true;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    
     template<class P /*Payload*/>
     class BinaryTreeNode
+        :INode<P>
 	{
 	public:
         typedef P payload_type;
 
-		BinaryTreeNode<P>* GetFirstChild();
+		INode<P>* GetFirstChild() const override;
 
-		BinaryTreeNode<P>* GetRightBrother();
+		INode<P>* GetRightBrother() const override;
 
-		bool AddChild(BinaryTreeNode<P>* node);
+		bool AddChild(INode<P>* node) override;
 
 		BinaryTreeNode();
 
 		virtual ~BinaryTreeNode();
-
-		bool operator ==    (const BinaryTreeNode& node) const;
-
-		bool operator ==    (const payload_type& payload) const;
-
-		bool operator >     (const BinaryTreeNode& node) const;
-
-		bool operator >     (const payload_type& payload) const;
-
-		bool operator <     (const BinaryTreeNode& node) const;
-
-		bool operator <     (const payload_type& payload) const;
-
+        
 	public:
-		BinaryTreeNode* _parent;
-		BinaryTreeNode* _left;
-		BinaryTreeNode* _right;
-		payload_type _p;
+        DECLARE_ATTRI_PTR(INode<P>*, parent);
+        
+        DECLARE_ATTRI_PTR(INode<P>*, left);
+        
+        DECLARE_ATTRI_PTR(INode<P>*, right);
+        
     };
-
-
+    
+    //
+    //  Implement
+    //
+    
+    template<class P /*Payload*/>
+    INode<P>* BinaryTreeNode<P>::GetFirstChild() const
+    {
+        return _left;
+    }
+    
+    template<class P /*Payload*/>
+    INode<P>* BinaryTreeNode<P>::GetRightBrother() const
+    {
+        ASSERT(_parent);
+        return _parent -> _right;
+    }
+    
+    template<class P /*Payload*/>
+    bool BinaryTreeNode<P>::AddChild(INode<P> *node)
+    {
+        if(!_left)
+        {
+            _left = node;
+            return true;
+        }
+        if(!_right)
+        {
+            _right = node;
+            return true;
+        }
+        
+        return false;
+    }
+    
 	template<class P /*Payload*/>
 	st::BinaryTreeNode<P>::BinaryTreeNode()
 	{
@@ -59,89 +187,91 @@ namespace st
 
 	}
 
-	template<class P /*Payload*/>
-	bool BinaryTreeNode<P>::operator < (const BinaryTreeNode<P> &node) const 
-	{
-		return _p < node._p;
-	}
+    //////////////////////////////////////////////////////////////////////////
 
-	template<class P /*Payload*/>
-	bool BinaryTreeNode<P>::operator < (const payload_type& payload) const
-	{
-		return _p < payload;
-	}
-
-	template<class P /*Payload*/>
-	bool BinaryTreeNode<P>::operator > (const BinaryTreeNode<P> &node) const 
-	{
-		return _p > node._p;
-	}
-
-	template<class P /*Payload*/>
-	bool BinaryTreeNode<P>::operator > (const payload_type& payload) const
-	{
-		return _p > payload;
-	}
-
-	template<class P /*Payload*/>
-	bool BinaryTreeNode<P>::operator == (const BinaryTreeNode<P> &node) const 
-	{
-		return _p == node._p;
-	}
-
-	template<class P /*Payload*/>
-	bool BinaryTreeNode<P>::operator==(const payload_type& payload) const
-	{
-		return _p = payload;
-	}
-
-
-	//////////////////////////////////////////////////////////////////////////
-
-    template<class P /*Payload*/, class N /*Node*/ = BinaryTreeNode<P>,class MA /*Memory Allocation*/= Mallocation>
+    template<class P /*Payload*/,class MA /*Memory Allocation*/= Mallocation>
     class Tree
 	{
     public:
-        typedef N	node_type;
         typedef MA	mallocation_type;
 		typedef P	payload_type;
-
-        void InjectNodes(const payload_type* nodes,size_t length);
-
+        
+        void Initialize(INode<P>*);
+        
+        void InjectNodes(const payload_type* payloads,size_t length);
+        
+        Tree();
+        
+        virtual ~Tree();
+        
+    private:
+        INode<payload_type>* NewData(const payload_type &payload);
+        
+        void DeleteData(INode<payload_type>* p);
+        
 	protected:
-		node_type _root;
+		INode<P>* _root;
 	};
 
 	typedef Tree<char> BTreeOfChar;
 
-	template<class P /*Payload*/, class N /*Node*/ /*= BinaryTreeNode<P>*/, class MA /*Memory Allocation*//*= Mallocation*/>
-	void Tree<P, N, MA>::InjectNodes(const payload_type* nodes, size_t length)
+    
+    //
+    //  Implement
+    //
+    
+    
+	template<class P /*Payload*/, class MA /*Memory Allocation*//*= Mallocation*/>
+	void Tree<P, MA>::InjectNodes(const payload_type* payloads, size_t length)
 	{
 		int i;
 		foreachArray(i, length)
 		{
-			const payload_type& currentPayload = *(nodes + i);
-			node_type* currentNode = _root->GetFirstChild();
+			const payload_type& currentPayload = *(payloads + i);
+			INode<P>* currentNode = _root->GetFirstChild();
 			do 
 			{
 				if (currentNode == currentPayload) 
 				{
-					currentNode = currentNode->GetFirstChild();
-					if (!currentNode) 
+					if (!currentNode->GetFirstChild())
 					{
-						currentNode->AddChild(currentPayload);
+						currentNode->AddChild(NewData()->SetPayload(currentPayload));
 						break;
 					}
+                    currentNode = currentNode->GetFirstChild();
 				}
 
 				currentNode = currentNode->GetRightBrother();
 				if (!currentNode) 
 				{
-					currentNode->_p.AddChild(currentPayload);
+					currentNode->_p.AddChild(NewData()->SetPayload(currentPayload));
 					break;
 				}
 			} while (1);
 		}
 	}
+    
+    template<class P /*Payload*/, class MA /*Memory Allocation*//*= Mallocation*/>
+    Tree<P,MA>::Tree()
+    {
+    }
+    
+    template<class P /*Payload*/, class MA /*Memory Allocation*//*= Mallocation*/>
+    Tree<P,MA>::~Tree()
+    {
+    }
+    
+    template<class P /*Payload*/, class MA /*Memory Allocation*//*= Mallocation*/>
+    INode<P>* Tree<P,MA>::NewData(const payload_type &payload)
+    {
+        return static_cast<INode<P>*>(mallocation_type::New(sizeof(TreeNode<P>)))->SetPayload(payload);
+    }
+    
+    template<class P /*Payload*/, class MA /*Memory Allocation*//*= Mallocation*/>
+    void Tree<P,MA>::DeleteData(INode<payload_type> *p)
+    {
+        p->~INode<payload_type>();
+        mallocation_type::Delete((void*)p);
+    }
 }
 #endif /* Tree_hpp */

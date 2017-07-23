@@ -32,9 +32,9 @@ namespace st {
 		const char* chrStart = _bufferString.GetElements();
 		foreachArray(i, _bufferString.length() + 1) 
 		{
-			if (' '		== _bufferString.At(i)||
-				'\0'	== _bufferString.At(i)||
-				'\n'	== _bufferString.At(i)) 
+			if (' '		== _bufferString[i]||
+				'\0'	== _bufferString[i]||
+				'\n'	== _bufferString[i])
 			{
 				if (0 == wordLength)
 				{
@@ -78,7 +78,7 @@ namespace st {
 
 	unsigned char LexerDiagram::CheckFlag(const string& str)
 	{
-
+        return 'a';
 	}
 
 	LexerDiagram::LexerDiagram()

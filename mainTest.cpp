@@ -17,8 +17,8 @@ using namespace st;
 int main(int argc, const char * argv[]) {
     
     MFileReader fReader;
-	string path = "C:\\Users\\Administrator\\Desktop\\hello.txt";
-	//string path = "/ys/text/hello.txt";
+	//string path = "C:\\Users\\Administrator\\Desktop\\hello.txt";
+	string path = "/ys/text/hello.txt";
     if(!fReader.ReadFile(path.GetElements()))
     {
         std::cout << "read file fail" << std::endl;

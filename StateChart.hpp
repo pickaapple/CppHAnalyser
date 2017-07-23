@@ -64,7 +64,7 @@ namespace st{
 
     protected:
 
-        DECLARE_ATTRI_PTR(BaseChart, NextStop)
+        DECLARE_ATTRI_PTR(BaseChart*, NextStop)
         DECLARE_ATTRI(int, Flag)
         DECLARE_ATTRI(Type, Type)
     };
