@@ -100,8 +100,6 @@ namespace st
     class MLexer
     {
     public:
-        void Initialize();
-        
         void Input(const string& oneLine);
         
 		unsigned char FindFlagByWord(const string &word) const;
@@ -112,10 +110,15 @@ namespace st
         
         MLexer();
         virtual ~MLexer();
-    private:
-		string			_bufferString;
-        List<FlagWord>	_wordsStore;
-		LexerDiagram	_lexerDiagram;
+	private:
+		void Initialize();
+
+	protected:
+		string			_BufferString;
+        List<FlagWord>	_WordsStore;
+		static Tree<char>		_ParttenTree;
+		static const char*		PARTTEN_STRING[];
+		static unsigned int		PARTTEN_COUNT;
 	};
 
 }
