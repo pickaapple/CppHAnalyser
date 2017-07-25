@@ -19,4 +19,11 @@ namespace st{
 		return length;
 	}
 
+	size_t strsize(const char *strs[],const char endChar)
+	{
+		size_t length = 0;
+		while (endChar != **(strs++)) // get the first char of string
+			++length;
+		return length;
+	}
 }
