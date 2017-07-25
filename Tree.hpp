@@ -14,6 +14,8 @@
 #include "List.hpp"
 namespace st
 {
+	//////////////////////////////////////////////////////////////////////////
+	//Interface
     template<typename P /*Payload*/>
     class INode
     {
@@ -36,8 +38,11 @@ namespace st
         
         bool operator <     (const payload_type& payload) const;
     protected:
-        
-        DECLARE_ATTRI_QUICKLY(INode<P>, payload_type, payload);
+		DECLARE_ATTRI_QUICKLY(INode<P>, payload_type, Payload);
+
+		DECLARE_ATTRI_PTR(INode*, Parent);
+
+		DECLARE_ATTRI(int, Index);
     };
 
     //
@@ -82,11 +87,7 @@ namespace st
         virtual ~TreeNode();
     
     protected:
-        DECLARE_ATTRI_PTR(INode<P>*, parent);
-        
-        DECLARE_ATTRI(List<INode<P>*>, children);
-        
-        DECLARE_ATTRI(int, index);
+        DECLARE_ATTRI(List<INode*>, Children);
     };
     
     //
@@ -96,20 +97,23 @@ namespace st
     template<class P /*Payload*/>
     INode<P>* TreeNode<P>::GetFirstChild() const
     {
-        return _children.At(0);
+        return _Children.At(0);
     }
     
     template<class P /*Payload*/>
     INode<P>* TreeNode<P>::GetRightBrother() const
     {
-        ASSERT(_parent);
-        return _parent ->_children.At(_index+1);
+        ASSERT(_Parent);
+		TreeNode<P> *treeNode = dynamic_cast<TreeNode<P>*>(_Parent);
+		if (treeNode)
+			return treeNode->_Children[_Index + 1];
+        return _Parent->GetRightBrother();
     }
     
     template<class P /*Payload*/>
     bool TreeNode<P>::AddChild(INode<P> *node)
     {
-        _children.AddAtLast(node)._index = _index + 1;
+        _Children.AddAtLast(node)->SetIndex(_Index + 1);
         return true;
     }
     
@@ -133,11 +137,9 @@ namespace st
 		virtual ~BinaryTreeNode();
         
 	public:
-        DECLARE_ATTRI_PTR(INode<P>*, parent);
+        DECLARE_ATTRI_PTR(INode<P>*, Left);
         
-        DECLARE_ATTRI_PTR(INode<P>*, left);
-        
-        DECLARE_ATTRI_PTR(INode<P>*, right);
+        DECLARE_ATTRI_PTR(INode<P>*, Right);
         
     };
     
@@ -148,27 +150,29 @@ namespace st
     template<class P /*Payload*/>
     INode<P>* BinaryTreeNode<P>::GetFirstChild() const
     {
-        return _left;
+        return _Left;
     }
     
     template<class P /*Payload*/>
     INode<P>* BinaryTreeNode<P>::GetRightBrother() const
     {
-        ASSERT(_parent);
-        return _parent -> _right;
+        ASSERT(_Parent);
+        return _Parent -> _Right;
     }
     
     template<class P /*Payload*/>
     bool BinaryTreeNode<P>::AddChild(INode<P> *node)
     {
-        if(!_left)
+        if(!_Left)
         {
-            _left = node;
+            _Left = node;
+			_Left->_Index = 0;
             return true;
         }
-        if(!_right)
+        if(!_Right)
         {
-            _right = node;
+			_Right = node;
+			_Right->_Index = 1;
             return true;
         }
         
@@ -196,8 +200,6 @@ namespace st
         typedef MA	mallocation_type;
 		typedef P	payload_type;
         
-        void Initialize(INode<P>*);
-        
         void InjectNodes(const payload_type* payloads,size_t length);
         
         Tree();
@@ -205,12 +207,14 @@ namespace st
         virtual ~Tree();
         
     private:
+		void Initialize();
+
         INode<payload_type>* NewData(const payload_type &payload);
         
         void DeleteData(INode<payload_type>* p);
         
 	protected:
-		INode<P>* _root;
+		TreeNode<P> _root;
 	};
 
 	typedef Tree<char> BTreeOfChar;
@@ -228,7 +232,7 @@ namespace st
 		foreachArray(i, length)
 		{
 			const payload_type& currentPayload = *(payloads + i);
-			INode<P>* currentNode = _root->GetFirstChild();
+			INode<P>* currentNode = _root.GetFirstChild();
 			do 
 			{
 				if (currentNode == currentPayload) 
@@ -244,7 +248,7 @@ namespace st
 				currentNode = currentNode->GetRightBrother();
 				if (!currentNode) 
 				{
-					currentNode->_p.AddChild(NewData()->SetPayload(currentPayload));
+					currentNode->GetParent()->AddChild(NewData()->SetPayload(currentPayload));
 					break;
 				}
 			} while (1);
@@ -254,13 +258,21 @@ namespace st
     template<class P /*Payload*/, class MA /*Memory Allocation*//*= Mallocation*/>
     Tree<P,MA>::Tree()
     {
+		Initialize();
     }
     
     template<class P /*Payload*/, class MA /*Memory Allocation*//*= Mallocation*/>
     Tree<P,MA>::~Tree()
     {
     }
-    
+
+	//private function
+
+	template<class P /*Payload*/, class MA /*Memory Allocation*//*= Mallocation*/>
+	void st::Tree<P, MA>::Initialize()
+	{
+	}
+
     template<class P /*Payload*/, class MA /*Memory Allocation*//*= Mallocation*/>
     INode<P>* Tree<P,MA>::NewData(const payload_type &payload)
     {
