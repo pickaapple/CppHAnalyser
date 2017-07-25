@@ -15,27 +15,26 @@
 using namespace st;
 
 int main(int argc, const char * argv[]) {
-    
-    MFileReader fReader;
+
+	MFileReader fReader;
 	//string path = "C:\\Users\\Administrator\\Desktop\\hello.txt";
 	string path = "/ys/text/hello.txt";
-    if(!fReader.ReadFile(path.GetElements()))
-    {
-        std::cout << "read file fail" << std::endl;
-        return 0;
-    }
+	if (!fReader.ReadFile(path.GetElements()))
+	{
+		std::cout << "read file fail" << std::endl;
+		return 0;
+	}
 	string line;
 	while (fReader.ReadLine(line)) {
 	}
 	MLexer lexer;
-	lexer.Initialize();
 	lexer.Input(line);
 	lexer.Lexer();
 	const List<FlagWord>& flagWords = lexer.Output();
 	int i;
 	foreachList(i, flagWords)
 	{
-		std::cout <<"flag:"<< (unsigned int)flagWords[i].flag <<" word:"<< flagWords[i].word.GetElements() << std::endl;
+		std::cout << "flag:" << (unsigned int)flagWords[i].flag << " word:" << flagWords[i].word.GetElements() << std::endl;
 	}
 	return 0;
 }
