@@ -15,7 +15,7 @@
 protected:                                                          \
     type _##attri;                                                  \
 public:                                                             \
-    type    Get##attri () const { return _##attri;}                 \
+    type&    Get##attri () const { return _##attri;}                 \
     void    Set##attri (const type& attri) { _##attri = attri;}     \
 
 
@@ -23,7 +23,7 @@ public:                                                             \
 protected:                                                          \
     type _##attri;                                                  \
 public:                                                             \
-    type    Get##attri () const { return _##attri;}                 \
+    type&    Get##attri () const { return _##attri;}                 \
     void    Set##attri (type const attri) { _##attri = attri;}      \
 
 
@@ -31,7 +31,7 @@ public:                                                             \
 protected:                                                                  \
     type _##attri;                                                          \
 public:                                                                     \
-    type    Get##attri () const { return _##attri;}                         \
+    type&    Get##attri () const { return _##attri;}                        \
     class*  Set##attri (const type& attri) { _##attri = attri;return this;} \
 
 
