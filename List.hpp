@@ -54,11 +54,11 @@ namespace st{
             return 0 == _length;
         }
         
-        inline element_type* At(size_t index) const
+        inline element_type At(size_t index) const
 		{
             if(index < _length)
                 return nullptr;
-            return &operator[](index);
+            return operator[](index);
         }
 
 		// add one element at first
