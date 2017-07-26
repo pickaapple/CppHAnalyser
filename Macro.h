@@ -15,24 +15,34 @@
 protected:                                                          \
     type _##attri;                                                  \
 public:                                                             \
-    type&    Get##attri () const { return _##attri;}                 \
+    type    Get##attri () const { return _##attri;}					\
     void    Set##attri (const type& attri) { _##attri = attri;}     \
 
+#define DECLARE_ATTRI_REF(type,attri)									\
+protected:																\
+    type _##attri;														\
+public:																	\
+    const type&		Get##attri () const { return _##attri;}				\
+    type&			Get##attri () { return _##attri;}					\
+    void			Set##attri (const type& attri) { _##attri = attri;} \
 
-#define DECLARE_ATTRI_PTR(type,attri)                               \
-protected:                                                          \
-    type _##attri;                                                  \
-public:                                                             \
-    type&    Get##attri () const { return _##attri;}                 \
-    void    Set##attri (type const attri) { _##attri = attri;}      \
+
+#define DECLARE_ATTRI_PTR(type,attri)									\
+protected:																\
+    type _##attri;														\
+public:																	\
+    type			Get##attri () { return _##attri;}					\
+    const type		Get##attri () const { return _##attri;}				\
+    void			Set##attri (type const attri) { _##attri = attri;}  \
 
 
-#define DECLARE_ATTRI_QUICKLY(class,type,attri)                             \
-protected:                                                                  \
-    type _##attri;                                                          \
-public:                                                                     \
-    type&    Get##attri () const { return _##attri;}                        \
-    class*  Set##attri (const type& attri) { _##attri = attri;return this;} \
+#define DECLARE_ATTRI_REF_QUICKLY(class,type,attri)								\
+protected:																		\
+    type _##attri;																\
+public:																			\
+    const type&	Get##attri () const { return _##attri;}							\
+    type&		Get##attri () { return _##attri;}							\
+    class*		Set##attri (const type& attri) { _##attri = attri;return this;} \
 
 
 

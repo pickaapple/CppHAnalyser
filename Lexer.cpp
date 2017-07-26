@@ -10,6 +10,7 @@
 namespace st {
 	const char* MLexer::PARTTEN_STRING[] = 
 	{
+		//keyword
 		"template",
 		"typename",
 		"namespace",
@@ -19,43 +20,55 @@ namespace st {
 		"friend",
 		"override",
 		"explicit",
+		//c v type qualifiers			//常变量修饰符
 		"const",
 		"volatile",
 		"mutable",
+		//access specifiers				//访问修饰符
 		"public",
 		"protected",
 		"private",
-		"auto",
-		"register",
+		//storage duration specifiers	//存储时间修饰符
+		"auto",				//timeout
+		"register",			//timeout
 		"static",
 		"extern",
-		"thread_local",
+		"thread_local",		//c++ 11
+		//fundamental types				//基础类型
+		//| __type
+		//		|__void type
 		"void",
+		//		|__boolean type
 		"bool",
+		//		|__character type
 		"char",
 		"wchar_t",
 		"char16_t",
 		"char32_t",
+		//		|__integer type
 		"short",
 		"long",
 		"int",
-		"long",
-		"int",
+		//		| __floating point type
 		"float",
 		"double",
+		//		| __signedness
 		"signed",
 		"unsigned",
+		//		|__size
 		"short",
-		"long long",
+		"long",
 		"\0"
 	};
 	void MLexer::Initialize()
 	{
 		unsigned int i;
-		foreachArray(i, PARTTEN_COUNT)
+		unsigned int parttenCount = strsize(PARTTEN_STRING, '\0');
+		foreachArray(i, parttenCount)
 		{
-			_ParttenTree.InjectNodes(PARTTEN_STRING[i], strsize(PARTTEN_STRING, '\0'));
+			_ParttenTree.InjectNodes(PARTTEN_STRING[i], strlen(PARTTEN_STRING[i]));
 		}
+		SetInvalidFlag(parttenCount + 1);
 	}
 
 	void MLexer::Input(const string& oneLine)
@@ -65,7 +78,10 @@ namespace st {
 
 	unsigned char MLexer::FindFlagByWord(const string &word) const
 	{
-		return 1;
+		TreeNode<char> flagNode;
+		if (!FindFlagNodeInTrie(word.GetElements(), word.length(), _ParttenTree, flagNode))
+			return _InvalidFlag;
+		return (unsigned char)flagNode.GetPayload();
 	}
 
 	void MLexer::Lexer()
@@ -110,6 +126,7 @@ namespace st {
 	}
 
 	MLexer::MLexer()
+		:_ParttenTree('R')
 	{
 		Initialize();
 	}

@@ -29,8 +29,10 @@ namespace st {
 
 		//append string whether the elements is or not end of '\0'
 		bool Append(const E* elements, size_t size);
+		
+		bool Append(const E* elements);
 
-		bool Append(const E element);
+		bool Append(const E& element);
 
 		String();
 
@@ -61,6 +63,12 @@ namespace st {
 	}
 
 	template <class E /*Element*/, class MA /*Memry Allocation*/ /*= Mallocation*/>
+	bool String<E, MA>::Append(const E* elements)
+	{
+		return Append(elements,strlen(elements));
+	}
+
+	template <class E /*Element*/, class MA /*Memry Allocation*/ /*= Mallocation*/>
 	bool String<E, MA>::Append(const E* elements, size_t size)
 	{
 		if (0 == size)
@@ -73,7 +81,7 @@ namespace st {
 	}
 
 	template <class E /*Element*/, class MA /*Memry Allocation*/ /*= Mallocation*/>
-	bool String<E, MA>::Append(const E element)
+	bool String<E, MA>::Append(const E& element)
 	{
 		this -> Remove(List<E,MA>::_length - 1);	//reomve last '\0'
 		this -> AddAtLast(element);

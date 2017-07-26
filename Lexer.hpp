@@ -116,9 +116,10 @@ namespace st
 	protected:
 		string			_BufferString;
         List<FlagWord>	_WordsStore;
-		static Tree<char>		_ParttenTree;
+		Tree<char>		_ParttenTree;
 		static const char*		PARTTEN_STRING[];
-		static unsigned int		PARTTEN_COUNT;
+
+		DECLARE_ATTRI(unsigned int,InvalidFlag)
 	};
 
 }

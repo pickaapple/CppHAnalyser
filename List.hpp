@@ -43,7 +43,10 @@ namespace st{
 		{
 			return _data;
 		}
-
+		inline size_t size() const 
+		{
+			return _length;
+		}
         inline size_t length() const
 		{
             return _length;
@@ -56,8 +59,6 @@ namespace st{
         
         inline element_type At(size_t index) const
 		{
-            if(index < _length)
-                return nullptr;
             return operator[](index);
         }
 
@@ -72,6 +73,10 @@ namespace st{
 				DeleteData(_data);
 				_data = newData;
 				_capacity = newCapacity;
+			}
+			else
+			{
+				memcpy(_data + 1, _data, sizeof(element_type) * _length);
 			}
 			return _data[0] = element;
 		}
@@ -154,7 +159,7 @@ namespace st{
 			return Remove(index,1);
         }
 
-		inline element_type RemoveLast()
+		inline element_type PopLast()
 		{
 			return _data[--_length];
 		}

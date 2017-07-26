@@ -12,18 +12,17 @@
 #include "Checks.hpp"
 
 namespace st{
-
+	const std::streamsize FileReaderOneLineBuffSize = 30;
 	bool MFileReader::ReadLine(string& line)
 	{
 		ASSERT(_ifs.is_open());
 		if (_ifs.eof())
 			return false;
-		const std::streamsize buffSize = 4;
-		char buff[buffSize];
+		char buff[FileReaderOneLineBuffSize];
 		do{	
 			//buff full
 			_ifs.clear();
-			_ifs.getline(buff, buffSize);
+			_ifs.getline(buff, FileReaderOneLineBuffSize);
 			line.Append(buff, _ifs.gcount());
 		}
 		while (_ifs.fail());
