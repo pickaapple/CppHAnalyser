@@ -110,6 +110,7 @@ namespace st {
 	typedef String<char> string;
 
 	size_t strlen(const char *str);
+	size_t strlen(const char *str,const char endChar);
 	size_t strsize(const char *strs[], const char endChar);
 }
 

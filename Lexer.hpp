@@ -16,110 +16,68 @@
 
 namespace st
 {
-	/*
-	template
-	typename
+	//////////////////////////////////////////////////////////////////////////
 
-	namespace
-	class
-	struct
-	enum
-
-	friend
-
-	override
-	explicit
-	
-	c v type qualifiers			//常变量修饰符
-		|__const
-		|__volatile
-		|__mutable
-
-	access specifiers			//访问修饰符
-		|__public
-		|__protected
-		|__private
-
-	storage duration specifiers	//存储时间修饰符
-		|__auto			timeout
-		|__register		timeout
-		|__static
-		|__extern
-		|__thread_local	c++ 11
-
-	fundamental types			//基础类型
-		|__type
-			|__void type
-				|__void
-			|__boolean type
-				|__bool
-			|__character type
-				|__char
-				|__wchar_t
-				|__char16_t c++ 11
-				|__char32_t	c++ 11
-			|__integer type
-				|__short
-				|__long
-				|__int
-			|__floating point type
-				|__float
-				|__double
-		|__modifiers
-			|__signedness
-				|__signed
-				|__unsigned
-			|__size
-				|__short
-				|__long
-				|__long long
-
-	*/
-	class LexerDiagram
+	class FlagWord
 	{
 	public:
-		unsigned char CheckFlag(const string& str);
+		struct Flag
+		{
+			char _Flag;
+			int _Type;
+		};
 
-		LexerDiagram();
+		void AddFlag(char flag,int type);
 
-		virtual ~LexerDiagram();
+		FlagWord();
+
+		virtual ~FlagWord();
 	protected:
+		DECLARE_ATTRI_REF(List<Flag>,Flags)
 
+		DECLARE_ATTRI_REF(string, Word)
 	};
 
 	//////////////////////////////////////////////////////////////////////////
 
-    struct FlagWord
+	class MLexer
 	{
-		unsigned char flag;
-        string word;
-    };
-	
-	//////////////////////////////////////////////////////////////////////////
+	public:
 
-    class MLexer
-    {
-    public:
-        void Input(const string& oneLine);
-        
-		unsigned char FindFlagByWord(const string &word) const;
+		typedef char char_size;
 
-        void Lexer();
+		enum EParttenType
+		{
+			WORD,
+			SYMBOL,
+			SPLIT
+		};
 
-        const List<FlagWord>& Output() const;
-        
-        MLexer();
-        virtual ~MLexer();
+		void Input(const string& oneLine);
+
+		bool FindFlagByWord(FlagWord& flagWord) const;
+
+		void Lexer();
+
+		const List<FlagWord>& Output() const;
+
+		MLexer();
+		virtual ~MLexer();
 	private:
 		void Initialize();
 
 	protected:
-		string			_BufferString;
-        List<FlagWord>	_WordsStore;
-		Tree<char>		_ParttenTree;
-		static const char*		PARTTEN_STRING[];
+		String<char_size>			_BufferString;
 
-		DECLARE_ATTRI(unsigned int,InvalidFlag)
+		List<FlagWord>	_WordsStore;
+
+		Tree<char_size>		_ParttenTree;
+
+		static const char_size*		PARTTEN_WORD[];
+
+		static const char_size		PARTTEN_SYMBOL[];
+
+		static const char_size		PARTTEN_WORD_SPLIT[];
 	};
 
 }

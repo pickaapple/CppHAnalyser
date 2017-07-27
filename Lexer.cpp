@@ -8,32 +8,64 @@
 
 #include "Lexer.hpp"
 namespace st {
-	const char* MLexer::PARTTEN_STRING[] = 
+
+	
+
+	//////////////////////////////////////////////////////////////////////////
+	void FlagWord::AddFlag(char flag, int type)
 	{
-		//keyword
+		_Flags.AddAtLast({ flag,type });
+	}
+
+	FlagWord::FlagWord()
+	{
+	}
+
+	FlagWord::~FlagWord()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+
+	const MLexer::char_size* MLexer::PARTTEN_WORD[] =
+	{
+		//template
 		"template",
+		"class",
 		"typename",
+
+		//data space
 		"namespace",
+
+		//data structure
 		"class",
 		"struct",
 		"enum",
+
+		//classes relationship
 		"friend",
+
+		//class function specifiers
+		"virtual",
 		"override",
 		"explicit",
+
 		//c v type qualifiers			//常变量修饰符
 		"const",
 		"volatile",
 		"mutable",
+
 		//access specifiers				//访问修饰符
 		"public",
 		"protected",
 		"private",
+
 		//storage duration specifiers	//存储时间修饰符
 		"auto",				//timeout
 		"register",			//timeout
 		"static",
 		"extern",
 		"thread_local",		//c++ 11
+
 		//fundamental types				//基础类型
 		//| __type
 		//		|__void type
@@ -58,17 +90,59 @@ namespace st {
 		//		|__size
 		"short",
 		"long",
+
+		//end flag
 		"\0"
+	};
+	const MLexer::char_size MLexer::PARTTEN_SYMBOL[] =
+	{
+		//
+		'=',
+		//
+		'*',
+		'&',
+		//
+		':',
+		';',
+		'(',
+		')',
+		'[',
+		']',
+		'{',
+		'}',
+		'<',
+		'>',
+		'\0'
+	};
+
+	const MLexer::char_size MLexer::PARTTEN_WORD_SPLIT[] =
+	{
+		'\0',
+		'\n',
+		' ',
+		'e'
 	};
 	void MLexer::Initialize()
 	{
-		unsigned int i;
-		unsigned int parttenCount = strsize(PARTTEN_STRING, '\0');
+		FlagNode::Flag flag;
+		size_t i;
+		size_t parttenCount = strsize(PARTTEN_WORD, '\0');
 		foreachArray(i, parttenCount)
 		{
-			_ParttenTree.InjectNodes(PARTTEN_STRING[i], strlen(PARTTEN_STRING[i]));
+			flag._Flag = i;
+			flag._Type = EParttenType::WORD;
+			INode<char_size>* node = _ParttenTree.InjectTreeNodes(PARTTEN_WORD[i], strlen(PARTTEN_WORD[i]));
+
+			//set flag
+			FlagNode* flagNode = FindFlagNodeUnderNode<char_size>(node);
+			//if the node is not a flag before,create a flag node below it
+			if (!flagNode)
+			{
+				flagNode = NewNode<FlagNode>();
+				node->AddChild(flagNode);
+			}
+			flagNode->GetFlags().AddAtLast(flag);
 		}
-		SetInvalidFlag(parttenCount + 1);
 	}
 
 	void MLexer::Input(const string& oneLine)
@@ -76,26 +150,44 @@ namespace st {
 		_BufferString.Append(oneLine);
 	}
 
-	unsigned char MLexer::FindFlagByWord(const string &word) const
+	bool MLexer::FindFlagByWord(FlagWord& flagWord) const
 	{
-		TreeNode<char> flagNode;
-		if (!FindFlagNodeInTrie(word.GetElements(), word.length(), _ParttenTree, flagNode))
-			return _InvalidFlag;
-		return (unsigned char)flagNode.GetPayload();
+		FlagNode* flagNode = FindFlagNodeInTrie<char_size>(flagWord.GetWord().GetElements(), flagWord.GetWord().length(), _ParttenTree);
+		if (flagNode) 
+		{
+			int i;
+			foreachList(i, flagNode->GetFlags())
+			{
+				FlagNode::Flag flag = flagNode->GetFlags()[i];
+				flagWord.AddFlag(flag._Flag,flag._Type);
+			}
+		}
+		return !!flagNode;
 	}
 
 	void MLexer::Lexer()
 	{
 		if (0 == _BufferString.length())
 			return;
-		int i;
+		bool IsSysmbolChar;
+		char currentChar;
+		int i, IndexSymbolChar;
 		int wordLength = 0;
-		const char* chrStart = _BufferString.GetElements();
+		const char_size* chrStart = _BufferString.GetElements();
 		foreachArray(i, _BufferString.length() + 1) 
 		{
-			if (' '		== _BufferString[i]||
-				'\0'	== _BufferString[i]||
-				'\n'	== _BufferString[i])
+			currentChar = _BufferString[i];
+			// if the character is symbol,store it.
+			if (IsSysmbolChar = IfElementInArray(PARTTEN_SYMBOL, strlen(PARTTEN_SYMBOL), currentChar, IndexSymbolChar))
+			{
+				FlagWord flagWord;
+				flagWord.GetWord().Append(chrStart, 1);
+				flagWord.AddFlag(PARTTEN_SYMBOL[IndexSymbolChar], EParttenType::SYMBOL);
+				_WordsStore.AddAtLast(flagWord);
+			}
+
+			// if the character is symbol or word split,get the word when the length is bigger than zero
+			if (IsSysmbolChar || IfElementInArray(PARTTEN_WORD_SPLIT,strlen(PARTTEN_WORD_SPLIT,'e'), currentChar))
 			{
 				if (0 == wordLength)
 				{
@@ -104,19 +196,18 @@ namespace st {
 				}
 				
 				FlagWord flagWord;
-				flagWord.word.Append(chrStart, wordLength);
-				flagWord.flag = FindFlagByWord(flagWord.word);
+				flagWord.GetWord().Append(chrStart, wordLength);
+				FindFlagByWord(flagWord);
 				_WordsStore.AddAtLast(flagWord);
 
 				//initialize for next word
 				chrStart += (wordLength + 1);
 				wordLength = 0;
+				continue;
 			}
-			else
-			{
-				++wordLength;
-			}
+			++wordLength;
 		}
+
 		_BufferString.Remove(0, i - wordLength - 1);
 	}
 
@@ -135,22 +226,7 @@ namespace st {
 	{
 
 	}
-	
 	//////////////////////////////////////////////////////////////////////////
 
-	unsigned char LexerDiagram::CheckFlag(const string& str)
-	{
-        return 'a';
-	}
-
-	LexerDiagram::LexerDiagram()
-	{
-
-	}
-
-	LexerDiagram::~LexerDiagram()
-	{
-
-	}
 
 }

@@ -11,10 +11,15 @@ namespace st{
 
 	size_t strlen(const char *str)
 	{
+		return strlen(str,'\0');
+	}
+
+	size_t strlen(const char *str,const char endChar)
+	{
 		if (0 == str)
 			return 0;
 		size_t length = 0;
-		while ('\0' != *(str++))
+		while (endChar != *(str++))
 			++length;
 		return length;
 	}

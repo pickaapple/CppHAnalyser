@@ -51,29 +51,65 @@ namespace st{
 		return true;
 	}
 
-	bool FindFlagNodeInTrie(const char* str, size_t length,const Tree<char>& tree, INode<char>& flagNode)
+	//////////////////////////////////////////////////////////////////////////
+
+	FlagNode::Flag::Flag()
+		:_Type(0)
 	{
-		const INode<char>* currentNode = &tree.GetRoot();
-		int i,j;
-		foreachArray(i,length)
-		{
-			foreachArray(j, currentNode->GetChildCount())
-			{
-				if (*currentNode->GetFloatChild(j) == str[i])
-				{
-					currentNode = currentNode->GetFloatChild(j);
-					break;
-				}
-			}
-			if (j == currentNode->GetChildCount())
-			{
-				return false;
-			}
-		}
-		if (!currentNode->IsFlagNode())
-			return false;
-		flagNode = *currentNode->GetFlag();
+	}
+
+	FlagNode::Flag::~Flag()
+	{
+	}
+
+	bool FlagNode::AddChild(INode<char>* node)
+	{
+		ASSERT(0);
+		return false;
+	}
+
+	size_t FlagNode::GetChildCount() const
+	{
+		ASSERT(0);
+		return 0;
+	}
+
+	INode<char>* FlagNode::GetFloatChild(size_t index) const
+	{
+		ASSERT(0);
+		return nullptr;
+	}
+
+	INode<char>* FlagNode::GetRightBrother() const
+	{
+		ASSERT(0);
+		return nullptr;
+	}
+
+	INode<char>* FlagNode::GetFirstChild() const
+	{
+		return nullptr;
+	}
+
+	bool FlagNode::IsFlagNode() const
+	{
 		return true;
 	}
+
+	FlagNode::FlagNode()
+	{
+
+	}
+
+	FlagNode::FlagNode(const char& payload)
+	{
+		INode<char>::_Payload = payload;
+	}
+
+	FlagNode::~FlagNode()
+	{
+
+	}
+
 
 }

@@ -28,13 +28,20 @@ int main(int argc, const char * argv[]) {
 	while (fReader.ReadLine(line)) {
 	}
 	MLexer lexer;
- 	lexer.Input(line);
- 	lexer.Lexer();
+	lexer.Input(line);
+	lexer.Lexer();
 	const List<FlagWord>& flagWords = lexer.Output();
-	int i;
+	int i, j;
 	foreachList(i, flagWords)
 	{
-		std::cout << "flag:" << (unsigned int)flagWords[i].flag << " word:" << flagWords[i].word.GetElements() << std::endl;
+		foreachList(j, flagWords[i].GetFlags())
+		{
+			std::cout << "flag" << j << ":" << (int)flagWords[i].GetFlags()[j]._Flag << " ";
+			std::cout << "type" << j << ":" << (int)flagWords[i].GetFlags()[j]._Type << " ";
+		}
+		if(0 == j)
+			std::cout << "flag:do not know";
+		std::cout << " word:" << flagWords[i].GetWord().GetElements() << std::endl;
 	}
 	return 0;
 }
